@@ -48,11 +48,12 @@ const props = defineProps<{
 const router = useRouter();
 const route = useRoute();
 const queryClient = useQueryClient();
-const isMobile = ref(window.innerWidth <= 768);
+const screenWidth = ref(window.innerWidth);
 
 const maxPages = computed(() => {
-  if (isMobile.value) return 4;
-  else return 5;
+  if (screenWidth.value > 768) return 5;
+  else if (screenWidth.value >= 414) return 4;
+  else return 3;
 });
 
 const limit = computed(() => {
@@ -83,7 +84,7 @@ function updatePage(page: number) {
 onMounted(() =>
   window.addEventListener(
     "resize",
-    () => (isMobile.value = window.innerWidth <= 768)
+    () => (screenWidth.value = window.innerWidth)
   )
 );
 </script>
