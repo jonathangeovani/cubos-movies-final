@@ -14,14 +14,16 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
 import LogoCubos from "../assets/LogoCubos.vue";
 import Sun from "../assets/icons/Sun.vue";
 import Moon from "../assets/icons/Moon.vue";
 import ButtonSecondary from "./ButtonSecondary.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useQueryClient } from "@tanstack/vue-query";
 
 const router = useRouter();
+const queryClient = useQueryClient();
 const storedTheme = localStorage.getItem("useDarkMode");
 const useDark = ref(storedTheme && JSON.parse(storedTheme));
 
@@ -49,6 +51,7 @@ const toggleTheme = () => {
 
 const goToHomePage = () => {
   router.push({ path: "/", query: { q: "", p: 1 } });
+  queryClient.invalidateQueries({ queryKey: ["movies"] });
   window.scrollTo(0, 0);
 };
 </script>
