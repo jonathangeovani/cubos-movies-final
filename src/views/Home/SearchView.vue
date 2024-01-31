@@ -6,7 +6,7 @@
       style="padding: 16px 15.5px"
       @click.prevent="$emit('filter-click')"
       :disabled="$route.query.q?.toString().length"
-      :active="activate || $route.query.filters != ''"
+      :active="activate || $route.query.filters?.toString().length != 0"
     />
   </div>
 </template>
