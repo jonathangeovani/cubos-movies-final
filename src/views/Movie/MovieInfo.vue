@@ -39,7 +39,7 @@
         <div class="info-row">
           <InfoCard
             title="Lançamento"
-            :content="movieData.release_date"
+            :content="parseDate(movieData.release_date)"
             class="grow"
           />
           <InfoCard
@@ -102,6 +102,12 @@ const parseMoney = (value: number) => {
   let quantity: number | string = newValue.toFixed(2);
   quantity = parseFloat(quantity);
   return `$${quantity}M`;
+};
+
+const parseDate = (dateToformat: string) => {
+  let date = new Date(dateToformat);
+
+  return `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`;
 };
 </script>
 
