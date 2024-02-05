@@ -23,6 +23,7 @@
 import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useQueryClient } from "@tanstack/vue-query";
+import { debounce } from "@/utils/debounce";
 
 const props = defineProps<{
   label?: String;
@@ -34,9 +35,13 @@ const route = useRoute();
 const queryClient = useQueryClient();
 const searchQuery = ref(route.query.q?.toString() || "");
 
-watch(searchQuery, () => {
-  router.push({ query: { q: searchQuery.value, p: 1 }, replace: true });
+const updateQuery = debounce(() => {
+  router.push({ query: { q: searchQuery.value, p: 1 } });
   queryClient.invalidateQueries({ queryKey: ["movies"] });
+}, 750);
+
+watch(searchQuery, () => {
+  updateQuery();
 });
 </script>
 
