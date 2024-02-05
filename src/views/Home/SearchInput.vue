@@ -46,9 +46,7 @@ const updateQuery = debounce(() => {
   queryClient.invalidateQueries({ queryKey: ["movies"] });
 }, 750);
 
-watch(searchQuery, () => {
-  updateQuery();
-});
+watch(searchQuery, updateQuery);
 
 watch(routeQuery, (newValue) => {
   if (newValue != searchQuery.value) {
