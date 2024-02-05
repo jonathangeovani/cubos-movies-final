@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useQueryClient } from "@tanstack/vue-query";
 import { debounce } from "@/utils/debounce";
@@ -33,7 +33,13 @@ const props = defineProps<{
 const router = useRouter();
 const route = useRoute();
 const queryClient = useQueryClient();
-const searchQuery = ref(route.query.q?.toString() || "");
+
+const routeQuery = computed(() => {
+  if (route.query.q) {
+    return route.query.q.toString();
+  } else return "";
+});
+const searchQuery = ref(routeQuery.value || "");
 
 const updateQuery = debounce(() => {
   router.push({ query: { q: searchQuery.value, p: 1 } });
@@ -42,6 +48,12 @@ const updateQuery = debounce(() => {
 
 watch(searchQuery, () => {
   updateQuery();
+});
+
+watch(routeQuery, (newValue) => {
+  if (newValue != searchQuery.value) {
+    searchQuery.value = newValue;
+  }
 });
 </script>
 
