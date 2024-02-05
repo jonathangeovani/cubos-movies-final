@@ -3,13 +3,13 @@
     <FilterOption
       :text="'Todos'"
       :selected="selectedGenres.length == 0"
-      @click.prevent="updateQuery()"
+      @click.prevent="updateFilters()"
     />
     <FilterOption
       v-for="genre in genres"
       :text="genre.name"
       :selected="selectedGenres.includes(`${genre.id}`)"
-      @click.prevent="updateQuery(genre.id)"
+      @click.prevent="updateFilters(genre.id)"
       :key="genre.id"
     />
   </div>
@@ -21,6 +21,7 @@ import { genres } from "@/utils/genres";
 import { useRoute, useRouter } from "vue-router";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
+import { debounce } from "@/utils/debounce";
 
 const route = useRoute();
 const router = useRouter();
@@ -32,7 +33,7 @@ const selectedGenres = computed(() => {
   } else return [];
 });
 
-function updateQuery(id?: number) {
+function updateFilters(id?: number) {
   let listOfFilters: string[] = [];
   if (id) {
     if (selectedGenres.value.includes(`${id}`)) {
@@ -51,8 +52,12 @@ function updateQuery(id?: number) {
     },
   });
 
-  queryClient.invalidateQueries({ queryKey: ["movies"] });
+  updateQuery();
 }
+
+const updateQuery = debounce(() => {
+  queryClient.invalidateQueries({ queryKey: ["movies"] });
+}, 750);
 </script>
 
 <style scoped lang="scss">
